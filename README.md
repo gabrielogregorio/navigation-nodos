@@ -1,5 +1,7 @@
 # Navigation nodos
 
+[View demo](https://gabrielogregorio.github.io/navigation-nodos/)
+
 This project consists of code that allows navigation via keyboard/gamepad using the arrows or control, focusing on the nodes, and can be used with typescript, javascript, react, pure javascript and potentially in other ways as well.
 
 ![using navigation nodes](./docs/using.gif)
