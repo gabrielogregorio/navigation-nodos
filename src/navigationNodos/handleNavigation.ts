@@ -6,23 +6,23 @@ export const handleNavigation = (
   navigationMap: MapeClosedType,
   config: ConfigType = defaultConfig,
 ) => {
+  const { activeElement } = document;
   const nodoId =
-    document.activeElement && document.activeElement.getAttribute(config.atributeControl)
-      ? document.activeElement.getAttribute(config.atributeControl)
-      : document.querySelector(`[${config.atributeControl}]`)?.getAttribute(config.atributeControl);
+    activeElement?.getAttribute(config.atributeControl) ||
+    document.querySelector(`[${config.atributeControl}]`)?.getAttribute(config.atributeControl);
 
   if (!nodoId || !navigationMap[nodoId]) return;
+
+  const nextNodoId = navigationMap[nodoId][direction];
+  if (!nextNodoId) {
+    return;
+  }
 
   document.querySelectorAll(`[${config.atributeControl}]`).forEach((el) => {
     el.classList.remove(config.classFocused);
   });
 
-  const nextNodo = navigationMap[nodoId][direction];
-  if (!nextNodo) {
-    return;
-  }
-
-  const nextElement = document.querySelector(`[${config.atributeControl}="${nextNodo}"]`) as HTMLButtonElement;
+  const nextElement = document.querySelector(`[${config.atributeControl}="${nextNodoId}"]`) as HTMLButtonElement;
 
   nextElement?.classList.add(config.classFocused);
   nextElement?.focus();
