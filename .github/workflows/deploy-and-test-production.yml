@@ -1,0 +1,38 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies and test
+        run: yarn install --frozen-lockfile
+
+      - name: build App
+        run: |
+          echo "export const envs = { VITE_BASE_URL: '/navigation-nodos', VITE_ENVIRONMENT: 'production' };" > src/env.ts
+          yarn build
+
+      - name: Deploy with gh-pages
+        run: |
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/gabrielogregorio/navigation-nodos.git
+
+          echo "copy index to 404 page"
+          cp dist/index.html dist/404.html
+
+          npx gh-pages -d dist --add -u "github-actions-bot <support+actions@github.com>"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
